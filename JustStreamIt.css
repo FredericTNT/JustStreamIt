@@ -1,124 +1,111 @@
-body
-{
-    background: grey;
+body {
+    background: black;
     font-family: "Trebuchet MS", Verdana, sans-serif;
 }
-header
-{
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: darkcyan;
 }
-.logo
-{
+.logo {
     max-height: 40px;
     border: 2px white solid;
     border-radius: 5px;
     margin: 2px 2px 2px 4px;
     float: right;
 }
-ul
-{
+ul {
     display: flex;
     justify-content: flex-end;
     list-style-type: none;
 }
-li a
-{
+li a {
     margin-left: 20px;
     margin-right: 10px;
     text-decoration: none;
     color: white;
 }
-h3
-{
+#topScore {
+	max-width: 40%;
+	height: 268px;
+	margin: 10px auto;
+	padding-left: 10px;
+	border: 1px white groove;
+	color: white;
+}
+#topTitre {
+	margin-top: 10px;
+	font-size: x-large;
+}
+h3 {
     color: white;
     text-align: center;
 }
-figure
-{
-    text-align: center;
+#meilleurFilm {
+    max-width: 50%;
+	float: right;
 }
-#meilleurFilm
-{
-    max-width: 80%;
-    max-height: 300px;
-    border: 1px white groove;
-}
-.conteneur
-{
+.conteneur {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+	align-items: center;
 }
-.fleche
-{
+.fleche {
 	color: white;
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
 	margin: 0px 5px 0px 5px;
 }
-.fleche:hover, .cadre:hover
-{
+.fleche:hover {
 	color:red;
 }
-.cadre
-{
-    height: 100px;
+.cadre {
+    max-width: 12%;
     border: 1px white solid;
     margin: 5px 1px 5px 1px;
     color: white;
-    background: grey;
+    background: black;
 	flex: 1;
 }
-
-/* The Modal (background) */
+.cadre:hover {
+	border: 1px red solid;
+}
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
-
-/* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15% auto;
   padding: 20px;
-  border: 1px solid #888;
-  width: 50%; /* Could be more or less, depending on screen size */
+  border: 1px blue solid;
+  width: 50%;
 }
-
-/* The Close Button */
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
-
 .close:hover,
 .close:focus {
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
-
-#pochette
-{
+#pochette {
 	margin: 0px 10px 10px 0px;
 	float: left;
 }
-
-.sousImage
-{
+.sousImage {
 	clear: both;
 }
