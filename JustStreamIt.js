@@ -73,6 +73,8 @@ window.addEventListener('click', function(event) {
   }
 });
 
+function setStatusMessage(message){document.getElementById("logMessage").textContent = message};
+
 function topScore(requete) {
 	fetch(requete)
 		.then(function(res){
@@ -102,14 +104,13 @@ function topScore(requete) {
 						.textContent = value.description;
 				})
 				.catch(function(err) {
-					console.log("Erreur");
+					setStatusMessage("Echec de la connexion [topScore/détail]");
 				})
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [topScore]");
 		})
 };
-
 
 function askDetail(refId) {
 	fetch("http://localhost:8000/api/v1/titles/" + refId)
@@ -158,7 +159,7 @@ function askDetail(refId) {
 			modal.style.display = 'block';
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [askDetail");
 		})
 };
 
@@ -170,9 +171,7 @@ function filmsPage(requete, categorie, cadre) {
 			}
 		})
 		.then(function(value) {
-			document
-				.getElementsByClassName("fleche droite")[categorie]
-				.setAttribute("urlDroite", requete);
+			flechesDroite[categorie].setAttribute("urlDroite", requete);
 			let lastFilm = 0;
 			for (let i = 0; i < value.results.length && cadre < 8; i++) {
 				document
@@ -184,15 +183,13 @@ function filmsPage(requete, categorie, cadre) {
 				lastFilm = i;
 				cadre++;
 			};
-			document
-				.getElementsByClassName("fleche droite")[categorie]
-				.setAttribute("film", lastFilm.toString());
+			flechesDroite[categorie].setAttribute("film", lastFilm.toString());
 			if (value.next != null && cadre < 8) {
 				filmsPage(value.next, categorie, cadre);
 			};
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [filmsPage]");
 		});
 };
 
@@ -210,7 +207,7 @@ function filmNewDroite(requete, categorie) {
 			flechesDroite[categorie].setAttribute("urlDroite", requete);
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [filmNewDroite]");
 		});
 };
 
@@ -222,7 +219,7 @@ function filmDroite(requete, categorie) {
 			}
 		})
 		.then(function(value) {
-			let lastFilm = parseInt(document.getElementsByClassName("fleche droite")[categorie].getAttribute("film")) + 1;
+			let lastFilm = parseInt(flechesDroite[categorie].getAttribute("film")) + 1;
 			if (lastFilm < value.results.length || value.next != null) {
 				let cadre = 2;
 				for (let i = 1; i < 7; i++) {
@@ -234,30 +231,18 @@ function filmDroite(requete, categorie) {
 						.setAttribute("refId", document.getElementsByClassName("cadre " + cadre.toString())[categorie].getAttribute("refId"));
 					cadre++;
 				};
-				let firstFilm = parseInt(document.getElementsByClassName("fleche gauche")[categorie].getAttribute("film")) + 1;
+				let firstFilm = parseInt(flechesGauche[categorie].getAttribute("film")) + 1;
 				if (firstFilm < 5) {
-					document
-						.getElementsByClassName("fleche gauche")[categorie]
-						.setAttribute("film", firstFilm.toString());
+					flechesGauche[categorie].setAttribute("film", firstFilm.toString());
 				} else {
-					document
-						.getElementsByClassName("fleche gauche")[categorie]
-						.setAttribute("film", "0");
-					document
-						.getElementsByClassName("fleche gauche")[categorie]
-						.setAttribute("urlGauche", value.previous);
+					flechesGauche[categorie].setAttribute("film", "0");
+					flechesGauche[categorie].setAttribute("urlGauche", value.previous);
 				};
 			};
 			if (lastFilm < value.results.length) {
-				document
-					.getElementsByClassName("cadre 7")[categorie]
-					.setAttribute("refId", value.results[lastFilm].id.toString());
-				document
-					.getElementsByClassName("cadre 7")[categorie]
-					.setAttribute("src", value.results[lastFilm].image_url);
-				document
-					.getElementsByClassName("fleche droite")[categorie]
-					.setAttribute("film", lastFilm.toString());
+				listeCadres7[categorie].setAttribute("refId", value.results[lastFilm].id.toString());
+				listeCadres7[categorie].setAttribute("src", value.results[lastFilm].image_url);
+				flechesDroite[categorie].setAttribute("film", lastFilm.toString());
 			} else {
 				if (value.next != null) {
 					filmNewDroite(value.next, categorie);
@@ -265,7 +250,7 @@ function filmDroite(requete, categorie) {
 			};
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [filmDroite]");
 		});
 };
 
@@ -283,7 +268,7 @@ function filmNewGauche(requete, categorie) {
 			flechesGauche[categorie].setAttribute("urlGauche", requete);
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [filmNewGauche]");
 		});
 };
 
@@ -295,7 +280,7 @@ function filmGauche(requete, categorie) {
 			}
 		})
 		.then(function(value) {
-			let firstFilm = parseInt(document.getElementsByClassName("fleche gauche")[categorie].getAttribute("film")) - 1;
+			let firstFilm = parseInt(flechesGauche[categorie].getAttribute("film")) - 1;
 			if (firstFilm > -1 || value.previous != null) {
 				let cadre = 6;
 				for (let i = 7; i > 1; i--) {
@@ -307,30 +292,18 @@ function filmGauche(requete, categorie) {
 						.setAttribute("refId", document.getElementsByClassName("cadre " + cadre.toString())[categorie].getAttribute("refId"));
 					cadre--;
 				};
-				let lastFilm = parseInt(document.getElementsByClassName("fleche droite")[categorie].getAttribute("film")) - 1;
+				let lastFilm = parseInt(flechesDroite[categorie].getAttribute("film")) - 1;
 				if (lastFilm > -1) {
-					document
-						.getElementsByClassName("fleche droite")[categorie]
-						.setAttribute("film", lastFilm.toString());
+					flechesDroite[categorie].setAttribute("film", lastFilm.toString());
 				} else {
-					document
-						.getElementsByClassName("fleche droite")[categorie]
-						.setAttribute("film", "4");
-					document
-						.getElementsByClassName("fleche droite")[categorie]
-						.setAttribute("urlDroite", value.next);
+					flechesDroite[categorie].setAttribute("film", "4");
+					flechesDroite[categorie].setAttribute("urlDroite", value.next);
 				};
 			};
 			if (firstFilm > -1) {
-				document
-					.getElementsByClassName("cadre 1")[categorie]
-					.setAttribute("refId", value.results[firstFilm].id.toString());
-				document
-					.getElementsByClassName("cadre 1")[categorie]
-					.setAttribute("src", value.results[firstFilm].image_url);
-				document
-					.getElementsByClassName("fleche gauche")[categorie]
-					.setAttribute("film", firstFilm.toString());
+				listeCadres1[categorie].setAttribute("refId", value.results[firstFilm].id.toString());
+				listeCadres1[categorie].setAttribute("src", value.results[firstFilm].image_url);
+				flechesGauche[categorie].setAttribute("film", firstFilm.toString());
 			} else {
 				if (value.previous != null) {
 					filmNewGauche(value.previous, categorie);
@@ -338,7 +311,7 @@ function filmGauche(requete, categorie) {
 			};
 		})
 		.catch(function(err) {
-			console.log("Erreur");
+			setStatusMessage("Echec de la connexion [filmGauche]");
 		});
 };
 
@@ -348,22 +321,23 @@ function onLoaded(event) {
 	flechesGauche[0].setAttribute("film", "0");
 	flechesGauche[0].setAttribute("urlGauche", requeteBest);
 	filmsPage(requeteBest, 0, 1);
+//	filmDroite(flechesDroite[0].getAttribute("urlDroite"), 0);
 	
-	const requeteThriller = "http://localhost:8000/api/v1/titles/?genre=Thriller&sort_by=-imdb_score";
+	let requete = requeteBest + "&genre=Sport"
 	flechesGauche[1].setAttribute("film", "0");
-	flechesGauche[1].setAttribute("urlGauche", requeteThriller);
-	filmsPage(requeteThriller, 1, 1);
+	flechesGauche[1].setAttribute("urlGauche", requete);
+	filmsPage(requete, 1, 1);
 	
-	const requeteComedy = "http://localhost:8000/api/v1/titles/?genre=Comedy&sort_by=-imdb_score";
+	requete = requeteBest + "&genre=Comedy"
 	flechesGauche[2].setAttribute("film", "0");
-	flechesGauche[2].setAttribute("urlGauche", requeteComedy);
-	filmsPage(requeteComedy, 2, 1);
+	flechesGauche[2].setAttribute("urlGauche", requete);
+	filmsPage(requete, 2, 1);
 	
-	const requeteAction = "http://localhost:8000/api/v1/titles/?genre=Action&sort_by=-imdb_score"
+	requete = requeteBest + "&genre=Animation"
 	flechesGauche[3].setAttribute("film", "0");
-	flechesGauche[3].setAttribute("urlGauche", requeteAction);
-	filmsPage(requeteAction, 3, 1);
-}
+	flechesGauche[3].setAttribute("urlGauche", requete);
+	filmsPage(requete, 3, 1);
+};
 
 document.addEventListener('DOMContentLoaded', onLoaded);
 
