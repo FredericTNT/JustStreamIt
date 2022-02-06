@@ -51,17 +51,19 @@ h3 {
     justify-content: space-between;
 	align-items: center;
 }
-.fleche {
+.conteneur button {
+	background: black;
+	border: none;
 	color: white;
 	float: right;
 	font-size: 40px;
 	font-weight: bold;
 	margin: 0px 5px 0px 5px;
 }
-.fleche:hover {
-	color:red;
+.conteneur button:hover {
+	color: red;
 }
-.cadre {
+.conteneur img {
     max-width: 12%;
     border: 1px white solid;
     margin: 5px 1px 5px 1px;
@@ -69,7 +71,7 @@ h3 {
     background: black;
 	flex: 1;
 }
-.cadre:hover {
+.conteneur img:hover {
 	border: 1px red solid;
 }
 .modal {
