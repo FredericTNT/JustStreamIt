@@ -22,9 +22,7 @@ function initListener() {
 	document.getElementById("meilleurFilm").addEventListener('click', function(event) {
 			askDetail(document.getElementById("meilleurFilm").getAttribute("refId"));
 	});
-	document.getElementById("moreInfo").addEventListener('click', function(event) {
-			askDetail(document.getElementById("meilleurFilm").getAttribute("refId"));
-	});
+	document.getElementById("moreInfo").addEventListener('click', function(event) {moreFilms()});
 	document.getElementsByClassName("close")[0].addEventListener('click', function() {modal.style.display = "none";});
 };
 
@@ -44,10 +42,11 @@ function tableauFilms(requete, nombre, categorie, firstFilm, listeVignettes) {
 				tableauFilms(value.next, nombre, categorie, firstFilm, listeVignettes);
 			} else {
 				afficherFilms(listeVignettes, firstFilm, categorie);
+				categories[categorie][8].setAttribute("url", value.next);
 			};
 		})
 		.catch(function(err) {
-			setStatusMessage("Echec [tableauFilms] " + err);
+			setStatusMessage("[tableauFilms] " + err);
 		});
 };
 	
@@ -68,6 +67,7 @@ function afficherFilms(listeVignettes, firstFilm, categorie) {
 	if (lastFilm == listeVignettes.length) {
 		categories[categorie][8].disabled = true;
 		categories[categorie][8].style.color = "grey";
+		document.getElementById("moreInfo").setAttribute("more", categorie);
 	};
 };
 
@@ -102,15 +102,16 @@ function topScore(requete) {
 						.textContent = value.description;
 				})
 				.catch(function(err) {
-					setStatusMessage("Echec de la connexion [topScore/détail]");
+					setStatusMessage("[topScore/détail] " + err);
 				})
 		})
 		.catch(function(err) {
-			setStatusMessage("Echec de la connexion [topScore]");
+			setStatusMessage("[topScore] " + err);
 		})
 };
 
 function askDetail(refId) {
+	setStatusMessage("");
 	fetch(entryPoint + refId)
 		.then(function(res){
 			if (res.ok) {
@@ -157,11 +158,40 @@ function askDetail(refId) {
 			modal.style.display = 'block';
 		})
 		.catch(function(err) {
-			setStatusMessage("Echec de la connexion [askDetail");
+			setStatusMessage("[askDetail] " + err);
 		})
 };
 
+function moreFilms() {
+	let categorie = document.getElementById("moreInfo").getAttribute("more");
+	if (categorie != "null" && categorie != null) {
+		let requete = categories[categorie][8].getAttribute("url");
+		if (requete != "null") {
+			fetch(requete)
+				.then(function(res){
+					if (res.ok) {
+						return res.json();
+					}
+				})
+				.then(function(value) {
+					for (let i = 0; i < value.results.length; i++) {
+						films[categorie].push(new Vignette(value.results[i].id.toString(), value.results[i].image_url));
+					};
+					categories[categorie][8].setAttribute("url", value.next);
+					categories[categorie][8].disabled = false;
+					categories[categorie][8].style.removeProperty("color");
+					document.getElementById("moreInfo").setAttribute("more", null);
+					setStatusMessage("(++) " + document.getElementsByTagName("h3")[categorie].textContent);
+				})
+				.catch(function(err) {
+					setStatusMessage("[moreFilms] " + err);
+				})
+		} else {setStatusMessage("(Fin) " + document.getElementsByTagName("h3")[categorie].textContent)};
+	} else {setStatusMessage("(Non) il vous reste des films à découvrir !")};
+};
+
 function filmDroite(categorie) {
+	setStatusMessage("");
 	let firstFilm = parseInt(categories[categorie][0].getAttribute("film")) + 1;
 	categories[categorie][0].disabled = false;
 	categories[categorie][0].style.removeProperty("color");
@@ -169,9 +199,11 @@ function filmDroite(categorie) {
 };
 
 function filmGauche(categorie) {
+	setStatusMessage("");
 	let firstFilm = parseInt(categories[categorie][0].getAttribute("film")) - 1;
 	categories[categorie][8].disabled = false;
 	categories[categorie][8].style.removeProperty("color");
+	document.getElementById("moreInfo").setAttribute("more", null);
 	afficherFilms(films[categorie], firstFilm, categorie);
 };
 
@@ -211,7 +243,7 @@ function onLoaded(event) {
 	newCategorie("Aventures sportives...", requeteBest + "&genre=Sport", 1);
 	newCategorie("Science-fiction...", requeteBest + "&genre=Sci-Fi", 2);
 	newCategorie("Films d'animation...", requeteBest + "&genre=Animation", 3);
-	newCategorie("Comedies...", requeteBest + "&genre=Comedy", 4);
+	newCategorie("Films policiers de 1948...", requeteBest + "&genre=Thriller&year=1948", 4);
 
 	initListener();
 };
